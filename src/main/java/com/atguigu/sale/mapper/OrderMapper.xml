@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.sale.mapper.OrderMapper">
+
+      <select id="select_kcdz_list_by_sku_id_list" resultType="String">
+           SELECT dz FROM t_mall_sku 
+           WHERE id IN(
+           <foreach collection="sku_id_list" item="sku_id" separator=",">
+               #{sku_id}
+           </foreach>
+           ) 
+           GROUP BY dz
+      </select>
+      
+      <select id="select_sku_shl_by_sku_id" resultType="int">
+           select kc from t_mall_sku 
+           where id = #{sku_id}
+           for update
+      </select>
+      
+      
+      <insert id="insert_into_t_mall_order" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+           insert into t_mall_order(shjr,zje,yh_id,yjsdshj,dzh_id,dzh_mch)
+		   values
+		   (#{shjr},#{zje},#{yh_id},#{yjsdshj},#{dzh_id},#{dzh_mch})
+      </insert>
+      
+	  <insert id="insert_into_t_mall_order_info" parameterType="List">
+	       insert into t_mall_order_info(dd_id,sku_id,sku_mch,shp_tp,sku_jg,sku_shl,sku_kcdz,gwch_id)
+		   values
+           <foreach collection="list" separator="," item="order_info">
+				(
+				#{order_info.dd_id},
+				#{order_info.sku_id},
+				#{order_info.sku_mch},
+				#{order_info.shp_tp},
+				#{order_info.sku_jg},
+				#{order_info.sku_shl},
+				#{order_info.sku_kcdz},
+				#{order_info.gwch_id}
+				)
+		   </foreach>
+	  </insert>
+
+	  <delete id="delete_t_mall_shoppingCar" parameterType="List">
+	       delete from t_mall_shoppingcar
+	       where id in 
+	       <foreach collection="list" item="order_info" 
+	        open="(" separator="," close=")">
+	           #{order_info.gwch_id}
+	       </foreach>
+	  </delete>
+
+	  <insert id="insert_into_t_mall_flow">
+		insert into t_mall_flow(dd_id,yh_id,psfsh,mqdd)
+		values
+		(#{dd_id},#{yh_id},#{psfsh},#{mqdd})
+	</insert>
+	
+	<update id="update_order_jdh_by_order_id">
+	     update t_mall_order set jdh = 2 where id = #{id}
+	</update>
+
+	<update id="update_flow_by_dd_id">
+	    update t_mall_flow
+	    <set>
+			<if test="ywy!=null and ywy!=''">
+				ywy = #{ywy},
+			</if>
+			<if test="lxfsh !=null and lxfsh !=''">
+				lxfsh =#{lxfsh},
+			</if>
+			<if test="psshj!=null and psshj!=''">
+				psshj=#{psshj},
+			</if>
+			<if test="psmsh!=null and psmsh!=''">
+				psmsh=#{psmsh}
+			</if>
+		</set>
+		where dd_id = #{dd_id}
+	</update>
+
+	<update id="update_sku_by_order_info">
+	    update t_mall_sku set kc = kc - #{sku_shl} , sku_xl = sku_xl + #{sku_shl}
+		where
+		id = #{sku_id}
+	</update>
+     
+</mapper>
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.sale.mapper.UserMapper">
+
+     <select id="selectUserByUsername" resultType="com.atguigu.sale.bean.T_MALL_USER" >
+         select * from t_mall_user where yh_mch = #{yh_mch}
+     </select>
+     
+     <insert id="insertUser">
+          insert into t_mall_user(yh_mch,yh_mm) values(#{yh_mch},#{yh_mm})
+     </insert>
+
+	 <select id="selectUser" resultType="com.atguigu.sale.bean.T_MALL_USER" >
+         select * from t_mall_user where yh_mch = #{yh_mch} and yh_mm = #{yh_mm}
+     </select>
+     
+</mapper>
+

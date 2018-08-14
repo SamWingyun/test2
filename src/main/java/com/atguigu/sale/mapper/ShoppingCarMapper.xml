@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.sale.mapper.ShoppingCarMapper">
+
+     <insert id="insert_car"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+          INSERT INTO t_mall_shoppingcar(sku_mch,sku_jg,tjshl,hj,yh_id,shp_id,sku_id,shp_tp,kc_dz) VALUES
+               (#{sku_mch},#{sku_jg},#{tjshl},#{hj},#{yh_id},#{shp_id},#{sku_id},#{shp_tp},#{kc_dz}) 
+     </insert>
+     
+     <insert id="update_car" >
+		update t_mall_shoppingcar
+		<set>
+			<if test="tjshl!=null and tjshl!=0">
+				tjshl = #{tjshl},
+			</if>
+			<if test="hj!=null and hj!=0">
+				hj = #{hj},
+			</if>
+			<if test="shfxz!=null and shfxz!=''">
+				shfxz = #{shfxz}
+			</if>
+		</set>
+		where id = #{id}
+	</insert>
+	
+	<select id="select_car_list_by_user_id" resultType="com.atguigu.sale.bean.T_MALL_SHOPPINGCAR">
+		select * from
+		T_MALL_SHOPPINGCAR
+		where yh_id = #{id}
+	</select>
+	
+	<delete id="delete_goods">
+	     delete from t_mall_shoppingcar where yh_id=#{user_id} and sku_id=#{sku_id}
+	</delete>
+	
+     
+</mapper>
+
